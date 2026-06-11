@@ -1,0 +1,145 @@
+import random
+
+# Global variables
+sequence = ""
+results = ""
+
+while True:
+
+    print("\n===== RANDOMNESS TESTING SYSTEM =====")
+    print("1. Generate Random Sequence")
+    print("2. Perform Statistical Tests")
+    print("3. Save Results to File")
+    print("4. Display Graph")
+    print("5. Exit")
+
+    choice = input("Enter your choice: ")
+
+    # Generate Random Sequence
+    if choice == "1":
+
+        try:
+            length = int(input("Enter sequence length (100 or more): "))
+
+            if length <= 0:
+                print("Please enter a positive number.")
+                continue
+
+            sequence = ""
+
+            for i in range(length):
+                sequence += str(random.randint(0, 1))
+
+            print("\nGenerated Sequence:")
+            print(sequence)
+
+        except ValueError:
+            print("Invalid input. Please enter a number.")
+
+    # Perform Statistical Tests
+    elif choice == "2":
+
+        if sequence == "":
+            print("Generate a sequence first.")
+            continue
+
+        zeros = sequence.count('0')
+        ones = sequence.count('1')
+
+        # Frequency Test
+        if abs(zeros - ones) <= 0.1 * len(sequence):
+            frequency_result = "Pass"
+            frequency_interpretation = "The sequence appears balanced."
+        else:
+            frequency_result = "Fail"
+            frequency_interpretation = "The sequence may not be random."
+
+        # Runs Test
+        runs = 1
+
+        for i in range(1, len(sequence)):
+            if sequence[i] != sequence[i - 1]:
+                runs += 1
+
+        if len(sequence) * 0.4 <= runs <= len(sequence) * 0.6:
+            runs_result = "Pass"
+            runs_interpretation = "The number of runs appears normal."
+        else:
+            runs_result = "Fail"
+            runs_interpretation = "Too many or too few runs detected."
+
+        # Mean Test
+        mean = sum(int(bit) for bit in sequence) / len(sequence)
+
+        if 0.45 <= mean <= 0.55:
+            mean_result = "Pass"
+            mean_interpretation = "Mean is close to the expected value."
+        else:
+            mean_result = "Fail"
+            mean_interpretation = "Mean suggests possible bias."
+
+        results = f"""
+===== TEST RESULTS =====
+
+Frequency Test
+Zeros: {zeros}
+Ones : {ones}
+Result: {frequency_result}
+Interpretation: {frequency_interpretation}
+
+Runs Test
+Runs: {runs}
+Result: {runs_result}
+Interpretation: {runs_interpretation}
+
+Mean Test
+Mean: {mean:.2f}
+Result: {mean_result}
+Interpretation: {mean_interpretation}
+"""
+
+        print(results)
+
+    # Save Results to File
+    elif choice == "3":
+
+        if sequence == "":
+            print("Nothing to save.")
+            continue
+
+        filename = input("Enter filename (e.g., results.txt): ")
+
+        try:
+            with open(filename, "w") as file:
+                file.write("===== GENERATED SEQUENCE =====\n")
+                file.write(sequence)
+                file.write("\n\n")
+                file.write(results)
+
+            print("Results saved successfully to", filename)
+
+        except Exception as e:
+            print("Error saving file:", e)
+
+    # Display Text-Based Graph
+    elif choice == "4":
+
+        if sequence == "":
+            print("Generate a sequence first.")
+            continue
+
+        zeros = sequence.count('0')
+        ones = sequence.count('1')
+
+        print("\n===== FREQUENCY GRAPH =====")
+        print(f"Zeros ({zeros}): " + "*" * zeros)
+        print(f"Ones  ({ones}): " + "*" * ones)
+
+    # Exit
+    elif choice == "5":
+
+        print("Program terminated.")
+        break
+
+    else:
+        print("Invalid choice. Please select 1–5.")
